@@ -59,7 +59,7 @@ def cosine_similarity(a: list, b: list) -> float:
 
 	if len(a) != len(b):
 		raise ValueError("Both vectors must be of same length.")
-	if all((x == 0 for x in a) or (x == 0 for x in b)) :
-		raise ValueError("Zero division Error! Vector canot be zero")
+	if all(x == 0 for x in a) or all(x == 0 for x in b):
+		raise ValueError("Vectors cannot be zero vectors.")
 
 	return (dot_product(a, b)) / (magnitude(a) * magnitude(b))
