@@ -1,27 +1,18 @@
-import os
-
-from dotenv import load_dotenv
-from openai import OpenAI
-
-load_dotenv()
-
-api_key = os.getenv("OPENAI_API_KEY")
-model = os.getenv("OPENAI_MODEL")
-
-if not api_key:
-	raise ValueError("OPENAI_API_KEY is missing")
-
-if not model:
-	raise ValueError("OPENAI_MODEL is missing")
+from chunking import chunk_text
+from embedding import generate_embeddings_for_chunks
 
 
+TEXT = """
+Oakfolio analyzes user's stock data and returns the analysis.
 
-client = OpenAI(api_key=api_key)
+It allows users to track investments across portfolios.
 
-response = client.responses.create(
-	model=model,
-	input="Explain RAG in one sentence"
-)
+User's can monitor and update portfolio and download details of each stock.
+"""
 
+chunks = chunk_text(text=TEXT, chunk_size=5, overlap=2)
 
-print(response.output_text)
+embeddings = generate_embeddings_for_chunks(chunks)
+
+print(len(chunks))
+print(embeddings)
