@@ -1,5 +1,8 @@
+import uuid
 from chunking import chunk_text
 from embedding import cosine_similarity, generate_embedding, generate_embeddings_for_chunks
+
+from vector_store import collection
 
 
 TEXT = """
@@ -10,9 +13,12 @@ It allows users to track investments across portfolios.
 User's can monitor and update portfolio and download details of each stock.
 """
 
-chunks = chunk_text(text=TEXT, chunk_size=5, overlap=2)
 
-embeddings = generate_embeddings_for_chunks(chunks)
+
+# chunks = chunk_text(text=TEXT, chunk_size=5, overlap=2)
+
+# embeddings = generate_embeddings_for_chunks(chunks)
+
 
 
 def create_chunk_records(chunks: list[str], embeddings: list[list[float]]) -> list[dict]:
@@ -60,15 +66,38 @@ def similarity_search(query_embedding: list[float], records: list[dict]) -> list
 
 
 
-rec = create_chunk_records(chunks=chunks, embeddings=embeddings)
+
+# rec = create_chunk_records(chunks=chunks, embeddings=embeddings)
+
+# ids = [str(uuid.uuid4()) for _ in rec]
+
+# documents = [record["text"] for record in rec]
+
+# embeddings = [record["embedding"] for record in rec]
+
+
+# collection.add(ids=ids, documents=documents, embeddings=embeddings)
+
+# stored_data = collection.get(
+#     include=["documents", "embeddings"]
+# )
+
+# print(len(stored_data["embeddings"]))
+# print(len(stored_data["embeddings"][0]))
 
 query = "How can I check performance of my portfolio?"
 
 query_embedding = generate_embedding(query)
 
-similarities = similarity_search(query_embedding, rec)
+# similarities = similarity_search(query_embedding, rec)
 
-for result in similarities:
-    print("Similarity:", result["similarity"])
-    print("Text:", result["record"]["text"])
-    print("---")
+results = collection.query(query_embeddings=[query_embedding], n_results=3)
+
+print(results["ids"])
+print(results["documents"])
+print(results["distances"])
+
+# for result in similarities:
+#     print("Similarity:", result["similarity"])
+#     print("Text:", result["record"]["text"])
+#     print("---")
